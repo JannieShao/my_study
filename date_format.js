@@ -30,5 +30,6 @@ var date_format = function(date, fmt) {
     }
     return fmt;
 }
+// eg : 
 var str = date_format(new Date(), "yyyy-MM-dd hh:mm:ss")
 console.log(str)
