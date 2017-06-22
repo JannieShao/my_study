@@ -1,16 +1,6 @@
-var fs = require('fs')
-var gd
+var fs    = require('fs')
+var gd    = require('node-gd')
 var async = require('async')
-var node_cmd = process.env['NODE_CMD'] || ''
-if (node_cmd.indexOf('node4') < 0) {
-    gd   = require('node-gd')
-} else {
-    gd   = require('node-gd2')
-}
-
-var ms = {
-    log : require('log')
-}
 // --------------------------------------------------------------------------------------------
 var _r_path = './'
 var _canvas_config = {
@@ -72,7 +62,7 @@ function canvas_img(src, callback) {
             var img_src  = canvas_config.img_path + img_name + '.' + img_type
             _gd_open[img_type](img_src, function(err, img) {
                 if (err) {
-                    ms.log.error('打开图片失败', err, img_src)
+                    console.log('打开图片失败', err, img_src)
                     cb(2); return
                 }
                 result.img_temp = img
@@ -85,7 +75,7 @@ function canvas_img(src, callback) {
             var h1 = parseInt(w1 * result.img_temp.height / result.img_temp.width)
             gd.createTrueColor(w1, h1, function(err, img) {
                 if (err) {
-                    ms.log.error('缩放图片失败', err, src.img_src)
+                    console.log('缩放图片失败', err, src.img_src)
                     cb(3); return
                 }
                 result.img_temp.copyResampled(img, 0, 0, src.des_x, src.des_y, w1, h1, result.img_temp.width, result.img_temp.height)
@@ -103,7 +93,7 @@ function canvas_img(src, callback) {
 
             gd.createTrueColor(src.ret_w, src.ret_h, function(err, img) {
                 if (err) {
-                    ms.log.error('裁剪图片失败', err, src.img_src)
+                    console.log('裁剪图片失败', err, src.img_src)
                     cb(3); return
                 }
                 result.img_src.copyResampled(img, 0, 0, src.des_x, src.des_y, src.ret_w, src.ret_h, src.ret_w, src.ret_h)
@@ -122,7 +112,7 @@ function canvas_img(src, callback) {
             var d_i_c = canvas_config.des_img
             gd.createTrueColor(d_i_c.width, d_i_c.height, function(err, img) {
                 if (err) {
-                    ms.log.error('裁剪图片失败', err, src.img_src)
+                    console.log('裁剪图片失败', err, src.img_src)
                     cb(3); return
                 }
                 result.img_src.copyResampled(img, 0, 0, 0, 0, d_i_c.width, d_i_c.height, result.img_src.width,result.img_src.height)
@@ -136,7 +126,7 @@ function canvas_img(src, callback) {
             // 读取背景图
             _gd_open['jpg'](canvas_config.bg_path, function(err, img) {
                 if (err) {
-                    ms.log.error('合成图片背景路径有误', err, src.type, canvas_config.bg_path)
+                    console.log('合成图片背景路径有误', err, src.type, canvas_config.bg_path)
                     cb(4); return
                 }
                 result.img_bg = img
@@ -149,7 +139,7 @@ function canvas_img(src, callback) {
             var height = result.img_bg.height
             gd.createTrueColor(width, height, function(err, img) {
                 if (err) {
-                    ms.log.error('生成新图片失败', err)
+                    console.log('生成新图片失败', err)
                     cb(5); return
                 }
                 var d_i_c = canvas_config.des_img
@@ -195,12 +185,12 @@ function canvas_img(src, callback) {
             var path      = canvas_config.img_path + card_name
             result.img_des.saveJpeg(path, 90, function(err) {
                 if (err) {
-                    ms.log.error('保存图片失败', err)
+                    console.log('保存图片失败', err)
                     cb(6); return
                 }
                 result.img_des.destroy()
 
-                ms.log.info('canvas_img success.', card_name)
+                console.log('canvas_img success.', card_name)
                 var card_src = _r_path + '_att/' + card_name
                 callback(null, card_src)
             })
